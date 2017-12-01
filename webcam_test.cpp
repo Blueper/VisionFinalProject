@@ -11,15 +11,15 @@ int main() {
     cout << "cannot open camera";
   }
 
-  //unconditional loop
   while (true) {
-  Mat cameraFrame;
-  stream1.read(cameraFrame);
-  cout << "M = "<< endl << " "  << cameraFrame.rows << ", " << cameraFrame.cols << endl << endl;
-  cout << cameraFrame.at<Vec3b>(Point(30,30)) << endl;
-  imshow("cam", cameraFrame);
-  if (waitKey(30) >= 0)
-    break;
+    Mat cameraFrame;
+    stream1.read(cameraFrame);  // read webcam frame
+    cout << "M = "<< endl << " "  << cameraFrame.rows << ", "
+         << cameraFrame.cols << endl << endl;  //  image size
+    cout << cameraFrame.at<Vec3b>(Point(30,30)) << endl;  // RGB at x,y = 30,30
+    imshow("cam", cameraFrame);  // draw camera frame
+    if (waitKey(30) >= 0)  // wait for user input for 30 milliseconds and quit if received
+      break;
   }
   return 0;
 }
