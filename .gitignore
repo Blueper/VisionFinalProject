@@ -1,2 +1,4 @@
 webcam_test
 volleyball.dSYM
+opencv
+*.o
