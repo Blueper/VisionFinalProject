@@ -1,5 +1,5 @@
 // porting to cpp from:
-// http://www.robindavid.fr/opencv-tutorial/motion-detection-with-opencv.html
+//www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
@@ -13,8 +13,8 @@ int main() {
   if (!capture_.isOpened()) { cout << "can't find webcam\n"; }
 
   Mat background;  // first frame (only background)
-  Mat frame, grey_frame;
-  Mat difference;
+  Mat frame, grey_frame;  // current frame, grayscale current frame
+  Mat difference;  // difference of background and current frame
 
   while(true) {
     capture_.read(frame);
