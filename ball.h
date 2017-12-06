@@ -8,9 +8,8 @@ using namespace cv;
 class Ball {
   public:
     Ball(int width, int height, int rad, Vec2f vel, const Scalar& col) :
-                                          cam_width{width}, cam_height{height},
-                                          position{Point(0,0)}, velocity{vel},
-                                          radius{rad}, color{col} {}
+            cam_width{width}, cam_height{height}, radius{rad},
+            position{Point(rad,rad)}, velocity{vel}, color{col} {}
 
     // update ball physics
     void Update();
@@ -25,6 +24,7 @@ class Ball {
     Vec2f velocity;
     Scalar color;
     int radius;
+    bool out_of_bounds = false;
 };
 
 #endif

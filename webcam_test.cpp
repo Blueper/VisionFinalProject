@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
   namedWindow("Pong", 1);
 
   // Create ball at position 0,0
-  int radius = 50;  // 50px ball radius
+  int radius = 25;  // 50px ball radius
   Vec2f velocity{20,20};  // initial ball velocity
   Scalar color{255,255,255};  // white ball color
   Ball ball{width, height, radius, velocity, color};
