@@ -36,6 +36,10 @@ all:
 	make $(PROGRAM)
 	make clean
 
+mot:
+	g++ `pkg-config opencv --cflags` -std=c++11 motion_detection.cpp ball.cpp -o motion_detection `pkg-config opencv --libs`
+
+
 .PHONY: clean
 clean:
 	(rm -f *.o;)
