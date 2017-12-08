@@ -16,22 +16,31 @@ int main() {
   Mat frame, grey_frame;  // current frame, grayscale current frame
   Mat difference;  // difference of background and current frame
 
+  // warm camera up and cache background
+  int warmup_frames = 5;
+  for (int initial_frames = 0; initial_frames < warmup_frames; initial_frames++) {
+    capture_.read(frame);
+    cvtColor(frame, grey_frame, CV_BGR2GRAY);  // convert to grayscale
+    GaussianBlur(grey_frame, grey_frame, Size(21,21), 0);  // remove noise
+    if (initial_frames == warmup_frames-1) {
+      grey_frame.copyTo(background);
+    }
+  }
+
+  // main detection loop
   while(true) {
     capture_.read(frame);
     cvtColor(frame, grey_frame, CV_BGR2GRAY);  // convert to grayscale
     GaussianBlur(grey_frame, grey_frame, Size(21,21), 0);  // remove noise
 
-    // For the first time, store the background
-    if (background.empty()) {
-      grey_frame.copyTo(background);
-      continue;
-    }
-
     // get the difference between the background and the current frame
     absdiff(background, grey_frame, difference);
 
+    imshow("BG", background);
+    imshow("Gray", grey_frame);
+    imshow("Diff", difference);
     // make the difference image binary
-    threshold(difference, difference, 25, 255, THRESH_BINARY_INV);
+    threshold(difference, difference, 25, 255, THRESH_BINARY);
 
     // expand the white parts of the image
     dilate(difference, difference, Mat(), Point(-1, -1), 2);
@@ -50,6 +59,7 @@ int main() {
       drawContours(frame, contours, i, color, 2, CV_FILLED, hierarchy, 1);
     }
 
+    imshow("Binary", difference);
     imshow("Target", frame);
     if(waitKey(30) >= 0) break;
   }
