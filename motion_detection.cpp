@@ -1,5 +1,3 @@
-// porting to cpp from:
-//www.pyimagesearch.com/2015/05/25/basic-motion-detection-and-tracking-with-python-and-opencv
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
@@ -20,15 +18,17 @@ int main() {
   int warmup_frames = 5;
   for (int initial_frames = 0; initial_frames < warmup_frames; initial_frames++) {
     capture_.read(frame);
+    flip(frame, frame, 1);
     if (initial_frames == warmup_frames-1) {
-      GaussianBlur(frame, frame, Size(21,21), 0);  // remove noise
-      frame.copyTo(background);
+      GaussianBlur(frame, blurred_frame, Size(21,21), 0);  // remove noise
+      blurred_frame.copyTo(background);
     }
   }
 
   // main detection loop
   while(true) {
     capture_.read(frame);
+    flip(frame, frame, 1);
     GaussianBlur(frame, blurred_frame, Size(21,21), 0);  // remove noise
     // get the difference between the background and the current frame
     absdiff(background, blurred_frame, difference);
