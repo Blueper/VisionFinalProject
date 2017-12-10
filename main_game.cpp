@@ -34,19 +34,22 @@ int main(int argc, char** argv) {
 
   // Create ball at position 0,0
   int radius = 25;  // 50px ball radius
-  Vec2f velocity{20,20};  // initial ball velocity
+  Vec2f velocity{0,0};  // initial ball velocity
   Scalar color{255,255,255};  // white ball color
-  Ball ball{width, height, radius, velocity, color};
+  Ball ball{width, height, radius, 100, 100, velocity, color};
 
   Mat cameraFrame;
   while (true) {
     cam_stream.read(cameraFrame);  // read webcam frame
     Mat fgmask = getForegroundMask(background, frame);
 
+    
+    
     ball.Update();
     ball.Draw(&cameraFrame);
 
-    imshow("Pong", cameraFrame);
+//    imshow("Pong", cameraFrame);
+//    imshow("Pong", fgmask);
     if(waitKey(30) >= 0) break;
   }
   return 0;

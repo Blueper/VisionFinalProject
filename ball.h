@@ -7,9 +7,9 @@ using namespace cv;
 
 class Ball {
   public:
-    Ball(int width, int height, int rad, Vec2f vel, const Scalar& col) :
+    Ball(int width, int height, int rad, int x, int y, Vec2f vel, const Scalar& col) :
             cam_width{width}, cam_height{height}, radius{rad},
-            position{Point(rad,rad)}, velocity{vel}, color{col} {}
+            position{Point(x,y)}, velocity{vel}, color{col} {}
 
     // update ball physics
     void Update();
