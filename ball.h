@@ -17,6 +17,22 @@ class Ball {
     // Draw ball at Point(x,y) position with Scalar(r,g,b) colors on image
     void Draw(Mat* image);
 
+    //position getter and setter
+    void SetPosition(int x, int y){
+         position = Point(x,y);
+    }
+    Point GetPosition(){
+	 return position;
+    }
+
+    //velocity getter and setter
+    void SetVelocity(float x, float y){
+	velocity = {x,y};
+    }
+
+    Vec2f GetVelocity(){
+	return velocity;
+    }
 
   private:
     int cam_width, cam_height;

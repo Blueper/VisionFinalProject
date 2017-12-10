@@ -24,4 +24,5 @@ void Ball::Update() {
 
 void Ball::Draw(Mat* image) {
     circle(*image, position, radius, color, -1);
+    circle(*image, position, radius, (0,0,0), 3);
 }
