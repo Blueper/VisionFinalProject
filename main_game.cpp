@@ -50,14 +50,13 @@ int main(int argc, char** argv) {
     int goal_status = ballInGoal(ball, width);
     if(goal_status!=0){
 
-      //Call function to place the ball back into the center
-      ball.SetPosition(100,100); //Replace this with center replacement code
-
       if(goal_status==-1){
         left_score++;
+        ball.Reset(2);
       }
       else if(goal_status==1){
         right_score++;
+        ball.Reset(0);
       }
     }
     

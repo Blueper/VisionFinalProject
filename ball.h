@@ -3,6 +3,8 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <stdlib.h>
+#include <cmath>
 using namespace cv;
 
 class Ball {
@@ -11,29 +13,37 @@ class Ball {
             cam_width{width}, cam_height{height}, radius{rad},
             position{Point(rad,rad)}, velocity{vel}, color{col} {}
 
-    // update ball physics
+    // Update ball physics
     void Update();
 
     // Draw ball at Point(x,y) position with Scalar(r,g,b) colors on image
     void Draw(Mat* image);
 
-    //position getter and setter
-    void SetPosition(int x, int y){
-         position = Point(x,y);
+    // Reset velocity, and the position to the center of frame
+    // LEFT = 0, NONE = 1, RIGHT = 2
+    void Reset(int side);
+
+    // Set Position
+    void SetPosition(int x, int y) {
+      position = Point(x,y);
     }
+
+    // Get Position
     Point GetPosition() const{
 	    return position;
     }
 
-    //velocity getter and setter
-    void SetVelocity(float x, float y){
-	velocity = {x,y};
+    // Set Velocity
+    void SetVelocity(float x, float y) {
+	    velocity = {x,y};
     }
-
-    Vec2f GetVelocity(){
-	return velocity;
+  
+    // Get Velocity
+    Vec2f GetVelocity() {
+	    return velocity;
     }
-
+    
+    // Get Radius
     int GetRadius() const{
       return radius;
     }
