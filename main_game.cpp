@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 
   Mat background;  // first frame (only background)
   Mat frame, blurred_frame;  // current frame, grayscale current frame
-  Mat difference, ball_mask(height, width, CV_8UC3, (0,0,0)); // "motion detection" frame and ball mask
+  Mat difference; // "motion detection" frame and ball mask
   Mat previous;
   Mat grey_frame;
 
@@ -59,28 +59,52 @@ int main(int argc, char** argv) {
     if(hitBuffer >= 10) hitBuffer = 0;
     if(hitBuffer > 0) hitBuffer++;   
 
+    Mat ball_mask(height, width, CV_8UC3, (0,0,0));
     for(int i = -1*radius; i < radius; ++i){
         for(int j = -1*radius; j < radius; ++j){
-            ball_mask.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) = 255;
+	    if(i < 0 && j > 0) ball_mask.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[0] = 255;
+	    if(i < 0 && j < 0) ball_mask.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[1] = 255;
+
+	    if(i > 0 && j < 0) ball_mask.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[2] = 255;
+
+//	    if(i > 0 && j > 0)
         }
     }
 
     //detect ball hit
+    int down = 0;
+    int right = 0;
     if(difference.at<uchar>(ball.GetPosition()) > threshold_value && hitBuffer == 0){
 	cout << "HIT CENTER" << endl;
 	for(int i = -1*radius; i < radius; ++i){
 	    for(int j = -1*radius; j < radius; ++j){
 		if(difference.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) > threshold_value){
+		    if(i < 0 && j > 0){ //q3++;
+			down--;
+			right++;
+		    }
+		    if(i < 0 && j < 0){ //q2++;
+			down++;
+			right++;
+		    }
+		    if(i > 0 && j < 0){ //q1++;
+			down++;
+			right--;
+		    }
+		    if(i > 0 && j > 0){ //q4++;
+			down--;
+			right--;
+		    }
 		    power++;
 		}
 	    }
 	}
-	pair<Point,Point> twoCenters = calculate_centers(ball_mask, difference);
-	cout << twoCenters.first.x << " " << twoCenters.first.y << endl;
-	cout << twoCenters.second.x << " " << twoCenters.second.y << endl;
-	line(cameraFrame, twoCenters.first, twoCenters.second, (255,0,0));
-//	cout << power << endl;
-//	ball.SetVelocity(power/100, 0);
+//	pair<Point,Point> twoCenters = calculate_centers(ball_mask, difference);
+//	cout << twoCenters.first.x << " " << twoCenters.first.y << endl;
+//	cout << twoCenters.second.x << " " << twoCenters.second.y << endl;
+//	line(cameraFrame, twoCenters.first, twoCenters.second, (255,0,0));
+	cout << down << " " << right << endl;
+	ball.SetVelocity(right/50,down/50);
 	power = 0;
 	hitBuffer++;
     }    
@@ -91,8 +115,8 @@ int main(int argc, char** argv) {
     
     grey_frame.copyTo(previous);
 
-//    imshow("Pong", cameraFrame);
-    imshow("Pong", ball_mask);
+    imshow("Pong", cameraFrame);
+//    imshow("Pong", ball_mask);
 //    imshow("Pong", fgmask);
 //    imshow("Pong", difference);
     if(waitKey(30) >= 0) break;
