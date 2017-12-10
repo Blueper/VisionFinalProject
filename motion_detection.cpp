@@ -68,23 +68,23 @@ int main() {
     } 
 
     if(hitBuffer > 0){
-//	for(int i = -1*radius; i < radius ; ++i){
-//		for(int j = -1*radius; j < radius; ++j){
-	for(int i = 75; i < 125; ++i){
-		for(int j = 75; j < 125; ++j){
+	for(int i = -1*radius; i < radius ; ++i){
+		for(int j = -1*radius; j < radius; ++j){
+//	for(int i = 0; i < 10; ++i){
+//		for(int j = 0; j < 30; ++j){
 	
 //			if(difference.at<Vec3b>(ball.GetPosition().x-i,ball.GetPosition().y-j)[0] > threshold_value){
 //				cout << difference.at<Vec3b>(ball.GetPosition().x-i,ball.GetPosition().y-j)[0] << endl;
 //				cout << ball.GetPosition().x-i << " " << ball.GetPosition().y-j << endl;	
 //				power++;
 //			}	
-			cout << ball.GetPosition().x+i << " " << ball.GetPosition().y+j << endl;
-//			difference.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[0] = 255;
-//			difference.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[1] = 255;
-//			difference.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[2] = 255;
-			difference.at<Vec3b>(Point(i,j))[0] = 255;
-			difference.at<Vec3b>(Point(i,j))[1] = 255;
-			difference.at<Vec3b>(Point(i,j))[2] = 255;
+//			cout << ball.GetPosition().x+i << " " << ball.GetPosition().y+j << endl;
+			difference.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[0] = 255;
+			difference.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[1] = 255;
+			difference.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[2] = 255;
+//			difference.at<Vec3b>(Point(i,j))[0] = 255;
+//			difference.at<Vec3b>(Point(i,j))[1] = 255;
+//			difference.at<Vec3b>(Point(i,j))[2] = 255;
 		}
 	}
     }
