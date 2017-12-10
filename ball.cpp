@@ -6,10 +6,6 @@ void Ball::Update() {
 
   // check bounds of camera only if not outside them
   if (!out_of_bounds) {
-    if (position.x - radius <= 0 || position.x + radius >= cam_width) {
-      velocity[0] *= -1;
-      out_of_bounds = true;
-    }
     if (position.y - radius <= 0 || position.y + radius >= cam_height) {
       velocity[1] *= -1;
       out_of_bounds = true;

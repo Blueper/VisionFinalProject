@@ -38,13 +38,33 @@ int main(int argc, char** argv) {
   Scalar color{255,255,255};  // white ball color
   Ball ball{width, height, radius, velocity, color};
 
+  int left_score = 0; //int to keep track of left score
+  int right_score = 0; //int to keep track of right score
+
   Mat cameraFrame;
   while (true) {
     cam_stream.read(cameraFrame);  // read webcam frame
     Mat fgmask = getForegroundMask(background, frame);
 
     ball.Update();
+    int goal_status = ballInGoal(ball, width);
+    if(goal_status!=0){
+
+      //Call function to place the ball back into the center
+      ball.SetPosition(100,100); //Replace this with center replacement code
+
+      if(goal_status==-1){
+        left_score++;
+      }
+      else if(goal_status==1){
+        right_score++;
+      }
+    }
+    
     ball.Draw(&cameraFrame);
+
+    drawText(cameraFrame, 0, 50, appendNumToText("SCORE: ", left_score));
+    drawText(cameraFrame, width-300, 50, appendNumToText("SCORE: ", right_score));
 
     imshow("Pong", cameraFrame);
     if(waitKey(30) >= 0) break;

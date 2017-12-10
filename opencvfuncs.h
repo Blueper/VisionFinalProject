@@ -3,6 +3,7 @@
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include "ball.h"
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -24,4 +25,7 @@ Mat getForegroundMask(const Mat& background, const Mat& frame);
 // Calculate centers of interrsection of ball and fg mask
 // Return center of intersection and ball_mask - intersection
 std::pair<Point,Point> calculate_centers(Mat ball_mask, Mat frame_mask);
+
+int ballInGoal(const Ball& ball, int cam_width);
+
 #endif

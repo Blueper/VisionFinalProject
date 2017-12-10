@@ -21,8 +21,8 @@ class Ball {
     void SetPosition(int x, int y){
          position = Point(x,y);
     }
-    Point GetPosition(){
-	 return position;
+    Point GetPosition() const{
+	    return position;
     }
 
     //velocity getter and setter
@@ -32,6 +32,10 @@ class Ball {
 
     Vec2f GetVelocity(){
 	return velocity;
+    }
+
+    int GetRadius() const{
+      return radius;
     }
 
   private:
