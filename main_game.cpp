@@ -38,10 +38,6 @@ int main(int argc, char** argv) {
     }
   }
 
-  //hitBuffer logic
-  if(hitBuffer >= 10) hitBuffer = 0;
-  if(hitBuffer > 0) hitBuffer++;
-
   // Create ball at position 0,0
   int radius = 25;  // 50px ball radius
   Vec2f velocity{0,0};  // initial ball velocity
@@ -58,7 +54,11 @@ int main(int argc, char** argv) {
     if(previous.empty()) grey_frame.copyTo(previous);
     absdiff(previous, grey_frame, difference);
     threshold(difference, difference, threshold_value, 255, THRESH_BINARY);
-    
+
+    //hitBuffer logic
+    if(hitBuffer >= 10) hitBuffer = 0;
+    if(hitBuffer > 0) hitBuffer++;   
+
     //detect ball hit
     if(difference.at<uchar>(ball.GetPosition()) > threshold_value && hitBuffer == 0){
 	cout << "HIT CENTER" << endl;
@@ -69,6 +69,7 @@ int main(int argc, char** argv) {
 		}
 	    }
 	}
+	cout << power << endl;
 	ball.SetVelocity(power/100, 0);
 	power = 0;
 	hitBuffer++;
