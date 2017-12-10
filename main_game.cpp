@@ -14,9 +14,15 @@ int main(int argc, char** argv) {
   if (!cam_stream.isOpened()) { cout << "cannot open webcam\n"; }
   int width = cam_stream.get(CV_CAP_PROP_FRAME_WIDTH);
   int height = cam_stream.get(CV_CAP_PROP_FRAME_HEIGHT);
+  int threshold_value = 20;
+  int hitBuffer = 0;
+  int power = 0;
 
   Mat background;  // first frame (only background)
   Mat frame, blurred_frame;  // current frame, grayscale current frame
+  Mat difference;
+  Mat previous;
+  Mat grey_frame;
 
   if (argc > 1 && !strcmp(argv[1], "fps"))
     cout << measureFPS(cam_stream) << endl;
@@ -32,6 +38,10 @@ int main(int argc, char** argv) {
     }
   }
 
+  //hitBuffer logic
+  if(hitBuffer >= 10) hitBuffer = 0;
+  if(hitBuffer > 0) hitBuffer++;
+
   // Create ball at position 0,0
   int radius = 25;  // 50px ball radius
   Vec2f velocity{0,0};  // initial ball velocity
@@ -43,13 +53,36 @@ int main(int argc, char** argv) {
     cam_stream.read(cameraFrame);  // read webcam frame
     Mat fgmask = getForegroundMask(background, frame);
 
+    cvtColor(cameraFrame, grey_frame, CV_BGR2GRAY); // convert to grayscale
+    GaussianBlur(grey_frame, grey_frame, Size(9,9), 0); // remove noise   
+    if(previous.empty()) grey_frame.copyTo(previous);
+    absdiff(previous, grey_frame, difference);
+    threshold(difference, difference, threshold_value, 255, THRESH_BINARY);
     
-    
+    //detect ball hit
+    if(difference.at<uchar>(ball.GetPosition()) > threshold_value && hitBuffer == 0){
+	cout << "HIT CENTER" << endl;
+	for(int i = -1*radius; i < radius; ++i){
+	    for(int j = -1*radius; j < radius; ++j){
+		if(difference.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) > threshold_value){
+		    power++;
+		}
+	    }
+	}
+	ball.SetVelocity(power/100, 0);
+	power = 0;
+	hitBuffer++;
+    }    
+ 
     ball.Update();
     ball.Draw(&cameraFrame);
 
-//    imshow("Pong", cameraFrame);
+    
+    grey_frame.copyTo(previous);
+
+    imshow("Pong", cameraFrame);
 //    imshow("Pong", fgmask);
+//    imshow("Pong", difference);
     if(waitKey(30) >= 0) break;
   }
   return 0;
