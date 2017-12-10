@@ -25,15 +25,6 @@ int main() {
     }
   }
 
-  for(int row = 0; row < background.rows; ++row) {
-    uchar* p = background.ptr(row);
-    for(int col = 0; col < background.cols; ++col) {
-      cout << (int)p[col] << endl;
-      *p++;
-    }
-  }
-
-
   // main detection loop
   while(true) {
     capture_.read(frame);
@@ -64,15 +55,4 @@ int main() {
     if(waitKey(30) >= 0) break;
   }
   return 0;
-}
-
-
-pair<Point,Point> calculate_centers(Mat ball_mask, Mat frame_mask) {
-  for(int row = 0; row < frame_mask.rows; ++row) {
-    uchar* p = frame_mask.ptr(row);
-    for(int col = 0; col < frame_mask.cols; ++col) {
-      cout << p[col] << endl;
-      *p++;
-    }
-  }
 }
