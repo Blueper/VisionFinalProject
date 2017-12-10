@@ -20,7 +20,7 @@ int main(int argc, char** argv) {
 
   Mat background;  // first frame (only background)
   Mat frame, blurred_frame;  // current frame, grayscale current frame
-  Mat difference;
+  Mat difference, ball_mask; // "motion detection" frame and ball mask
   Mat previous;
   Mat grey_frame;
 
@@ -61,16 +61,28 @@ int main(int argc, char** argv) {
 
     //detect ball hit
     if(difference.at<uchar>(ball.GetPosition()) > threshold_value && hitBuffer == 0){
+        difference.copyTo(ball_mask);
+	for(int row = 0; row < ball_mask.rows; ++row){
+	    uchar* p = ball_mask.ptr(row);
+	    for(int col = 0; col < ball_mask.cols; ++col){
+		p[col] = 0;
+	    }
+	}
 	cout << "HIT CENTER" << endl;
 	for(int i = -1*radius; i < radius; ++i){
 	    for(int j = -1*radius; j < radius; ++j){
 		if(difference.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) > threshold_value){
+		    ball_mask.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) = 255;
 		    power++;
 		}
 	    }
 	}
-	cout << power << endl;
-	ball.SetVelocity(power/100, 0);
+	pair<Point,Point> twoCenters = calculate_centers(ball_mask, difference);
+	cout << twoCenters.first.x << " " << twoCenters.first.y << endl;
+	cout << twoCenters.second.x << " " << twoCenters.second.y << endl;
+	line(cameraFrame, twoCenters.first, twoCenters.second, (255,0,0));
+//	cout << power << endl;
+//	ball.SetVelocity(power/100, 0);
 	power = 0;
 	hitBuffer++;
     }    
