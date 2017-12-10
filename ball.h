@@ -17,8 +17,12 @@ class Ball {
     // Draw ball at Point(x,y) position with Scalar(r,g,b) colors on image
     void Draw(Mat* image);
 
+    //position getter and setter
     void SetPosition(int x, int y){
          position = Point(x,y);
+    }
+    Point GetPosition(){
+	 return position;
     }
 
 
