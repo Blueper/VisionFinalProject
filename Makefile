@@ -32,8 +32,15 @@ PROGRAM=volleyball
 $(PROGRAM): $(ALL_OBJ)
 	g++ `$(CV_LIBS) --cflags` $(C++FLAG) -o $(EXEC_DIR)/$@ $(ALL_OBJ) `$(CV_LIBS) --libs` $(INCLUDES) $(LIBS_ALL)
 
+#Foreground Mask
+FG_OBJ=motion_detection.o opencvfuncs.o
+FG_PROGRAM=fgmask
+$(FG_PROGRAM): $(FG_OBJ)
+	g++ `$(CV_LIBS) --cflags` $(C++FLAG) -o $(EXEC_DIR)/$@ $(FG_OBJ) `$(CV_LIBS) --libs` $(INCLUDES) $(LIBS_ALL)
+
 all:
 	make $(PROGRAM)
+	make $(FG_PROGRAM)
 	make clean
 
 .PHONY: clean
