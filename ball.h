@@ -30,17 +30,17 @@ class Ball {
 
     // Get Position
     Point GetPosition() const{
-	    return position;
+      return position;
     }
 
     // Set Velocity
     void SetVelocity(float x, float y) {
-	    velocity = {x,y};
+      velocity = {x,y};
     }
   
     // Get Velocity
     Vec2f GetVelocity() {
-	    return velocity;
+      return velocity;
     }
     
     // Get Radius
