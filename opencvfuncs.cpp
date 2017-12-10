@@ -1,4 +1,3 @@
-#include <iostream>
 #include "opencvfuncs.h"
 
 double measureFPS(VideoCapture& vid_stream) {
@@ -28,6 +27,17 @@ double measureFPS(VideoCapture& vid_stream) {
   // Calculate frames per second
   double fps = num_frames/seconds;
   return fps;
+}
+
+void drawText(Mat& image, int x, int y, const std::string& text){
+  putText(image, text, Point(x,y), FONT_HERSHEY_DUPLEX, 2, cvScalar(255,255,255), 1, CV_AA);
+}
+
+std::string appendNumToText(std::string text, int num){
+  std::ostringstream oss;
+  oss << num;
+  text+= oss.str();
+  return text;
 }
 
 cv::Mat getForegroundMask(const Mat& background, const Mat& frame) {

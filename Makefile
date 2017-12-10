@@ -26,7 +26,6 @@ INCLUDES=  -I.
 LIBS_ALL =  -L/usr/lib -L/usr/local/lib $(MATH_LIBS)
 
 
-#Foreground Mask
 ALL_OBJ=main_game.o ball.o opencvfuncs.o
 PROGRAM=game
 $(PROGRAM): $(ALL_OBJ)
