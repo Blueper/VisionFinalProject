@@ -24,9 +24,10 @@ int main() {
   int width = capture_.get(CV_CAP_PROP_FRAME_WIDTH);
   int height = capture_.get(CV_CAP_PROP_FRAME_HEIGHT);
   int radius = 25;  // 50px ball radius
-  Vec2f velocity{20,20};  // initial ball velocity
+  int power = 0;
+  Vec2f velocity{0,0};  // initial ball velocity
   Scalar color{255,255,255};  // white ball color
-  Ball ball{width-30, height-30, radius, velocity, color};
+  Ball ball{width, height,100, 100, radius, velocity, color};
   Vec3b ballCenter;
   int hitBuffer = 0;
 //  Mat hitPixels;
@@ -35,8 +36,8 @@ int main() {
     capture_.read(frame);
     cvtColor(frame, grey_frame, CV_BGR2GRAY);  // convert to grayscale
     GaussianBlur(grey_frame, grey_frame, Size(9,9), 0);  // remove noise
-//    ball.Update();
-    ball.SetPosition(100,100);
+    ball.Update();
+//    ball.SetPosition(100,100);
     ball.Draw(&frame);
 
     // For the first time, store the background
@@ -50,73 +51,39 @@ int main() {
 
     // make the difference image binary
     threshold(difference, difference, threshold_value, 255, THRESH_BINARY);
-
+   
     if(hitBuffer >= 10) hitBuffer = 0;
     if(hitBuffer > 0) hitBuffer++;
 
+//    cout << ball.GetVelocity()[0] << " " << ball.GetVelocity()[1] << endl;
+
     // get the difference between the background and the current frame
     absdiff(background, grey_frame, difference);
-    ballCenter = difference.at<uchar>(ball.GetPosition()); 
-    if(ballCenter[0] > threshold_value){
+    ballCenter = difference.at<uchar>(ball.GetPosition());
+    if(ballCenter[0] > threshold_value && hitBuffer == 0){
 	cout << "HIT CENTER" << endl;
 	//cout << difference.at<Vec3b>(ball.GetPosition().x,ball.GetPosition().y)[0] << endl;
-	int power = 0;
-	
-
-	cout << power << endl;
-	hitBuffer++;
-    } 
-
-    if(hitBuffer > 0){
 	for(int i = -1*radius; i < radius ; ++i){
 		for(int j = -1*radius; j < radius; ++j){
-//	for(int i = 0; i < 10; ++i){
-//		for(int j = 0; j < 30; ++j){
-	
-//			if(difference.at<Vec3b>(ball.GetPosition().x-i,ball.GetPosition().y-j)[0] > threshold_value){
-//				cout << difference.at<Vec3b>(ball.GetPosition().x-i,ball.GetPosition().y-j)[0] << endl;
-//				cout << ball.GetPosition().x-i << " " << ball.GetPosition().y-j << endl;	
-//				power++;
-//			}	
-//			cout << ball.GetPosition().x+i << " " << ball.GetPosition().y+j << endl;
-			difference.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[0] = 255;
-			difference.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[1] = 255;
-			difference.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[2] = 255;
-//			difference.at<Vec3b>(Point(i,j))[0] = 255;
-//			difference.at<Vec3b>(Point(i,j))[1] = 255;
-//			difference.at<Vec3b>(Point(i,j))[2] = 255;
+			if(difference.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) > threshold_value){
+				power++;
+			}
 		}
 	}
+	ball.SetVelocity(power/100,0);
+	cout << power << endl;
+	power = 0;
+	hitBuffer++;
     }
-   //    imshow("Target",difference);
-
-//    findNonZero(difference, hitPixels);
-   
-    // expand the white parts of the image
-//    dilate(difference, difference, Mat(), Point(-1, -1), 100);
-
-    // Find contours
-//    vector<vector<Point> > contours;
-//    vector<Vec4i> hierarchy;
-    // find contours of objects in difference image, only returning the
-    // extreme outer ones and do simple chaining of the contours
-//    findContours(difference, contours, hierarchy, CV_RETR_EXTERNAL,
-//                 CV_CHAIN_APPROX_SIMPLE);
-
-    // Draw the contours on the image
-//    Scalar color = Scalar(0, 255, 255);
-//    for (int i = 0; i < contours.size(); i++) {
-//      drawContours(frame, contours, i, color, 2, CV_FILLED, hierarchy, 1);
-//    }
-
+ 
     //get the grey frame for the next image
     grey_frame.copyTo(background);
 
     //detect hits
 
-    imshow("Target", difference);
+//    imshow("Target", difference);
 //    imshow("Target", grey_frame);
-//    imshow("Target", frame);
+    imshow("Target", frame);
     if(waitKey(30) >= 0) break;
   }
   return 0;
