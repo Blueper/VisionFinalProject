@@ -1,76 +1,45 @@
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <iostream>
+#include <time.h>
+
+#include "ball.h"
 
 using namespace cv;
 using namespace std;
 
-int main() {
-  VideoCapture stream1(0);
+// Estimate FPS of video stream based on 120 frame capture
+double measureFPS(VideoCapture& vid_stream);
 
-  if (!stream1.isOpened()) { //check if video device has been initialised
+int main(int argc, char** argv) {
+  VideoCapture cam_stream(0);
+  if (!cam_stream.isOpened()) { //check if video device has been initialised
     cout << "cannot open camera";
   }
+  int width = cam_stream.get(CV_CAP_PROP_FRAME_WIDTH);
+  int height = cam_stream.get(CV_CAP_PROP_FRAME_HEIGHT);
+  if (argc > 1 && !strcmp(argv[1], "fps"))
+    cout << measureFPS(cam_stream) << endl;
 
-//  Mat edges;
-//  namedWindow("edges", 1);
-  int x = 25;
-  int y = 25;
-  int xMovement = 0;
-  int yMovement = 0;
-  int threshold = 50; //used to detect when an object makes contact with the ball
-  int hitBuffer = 0; //manual timer to reset ball "hittability." Bad practice. should replace.
-//  int xWallBuffer = 0;
-//  int yWallBuffer = 0;
+  //Mat edges;
+  namedWindow("Pong", 1);
+
+  // Create ball at position 0,0
+  int radius = 25;  // 50px ball radius
+  Vec2f velocity{20,20};  // initial ball velocity
+  Scalar color{255,255,255};  // white ball color
+  Ball ball{width, height, radius, velocity, color};
+
   Mat cameraFrame;
-  stream1.read(cameraFrame);
-  Vec3b current = cameraFrame.at<Vec3b>(Point(x,y));
-  Vec3b previous = cameraFrame.at<Vec3b>(Point(x,y));
   while (true) {
-//    Mat cameraFrame;
-    stream1.read(cameraFrame);  // read webcam frame
-
-    current = cameraFrame.at<Vec3b>(Point(x,y));
-   
-    //increment hit/wall buffers
-    if(hitBuffer > 0) hitBuffer++;
-    if(hitBuffer >= 10)	hitBuffer = 0;
-
-    //Code to detect hit from boundary
-    if( x <= 25 || x >= cameraFrame.cols || y <= 25 || y >= cameraFrame.rows){
-        x = cameraFrame.cols/2;
-	y = cameraFrame.rows/2;
-	xMovement = 0;
-	yMovement = 0;
-    }
-
-    //Code to detect hit from game object
-    if((current[0]-previous[0] > threshold || previous[0]-current[0] > threshold
-     ||current[1]-previous[1] > threshold || previous[1]-current[1] > threshold
-     ||current[2]-previous[2] > threshold || previous[2]-current[2] > threshold)
-     && hitBuffer == 0){
-        cout << "HIT!" << endl;
-	if(xMovement == 0 && yMovement == 0){	
-		xMovement = 5; 
-		yMovement = 5;
-	}
-	else{
-		xMovement *= -1;
-		yMovement *= -1;
-	}
-	hitBuffer = 1;
-    }
-
-   
-
-//     cout << "M = "<< endl << " "  << cameraFrame.rows << ", "
-//          << cameraFrame.cols << endl << endl;  //  image size
-//     cout << cameraFrame.at<Vec3b>(Point(30,30)) << endl;  // RGB at x,y = 30,30
+    cam_stream.read(cameraFrame);  // read webcam frame
+    ball.Update();
+    ball.Draw(&cameraFrame);
 
     //CODE TO CANNY EDGE DETECTOR
-//     cvtColor(cameraFrame, edges, CV_BGR2GRAY);
-//     GaussianBlur(edges, edges, Size(7,7), 1.5, 1.5);
-//     Canny(edges, edges, 0, 100, 3);
+    //cvtColor(cameraFrame, edges, CV_BGR2GRAY);
+    //GaussianBlur(edges, edges, Size(7,7), 1.5, 1.5);
+    //Canny(edges, edges, 0, 100, 3);
 
     //CODE TO ACCESS PIXELS
 //     uchar r, g, b;
@@ -82,16 +51,37 @@ int main() {
 //       }
 //     }
 
-    previous = cameraFrame.at<Vec3b>(Point(x,y));    
-
-    //CODE TO DRAW A CIRCLE
-    circle(cameraFrame, Point(x,y), 25, Scalar(255, 255, 255), -1);
-    circle(cameraFrame, Point(x,y), 25, Scalar(0,0,0), 1, 8);
-    x += xMovement;
-    y += yMovement;
-
     imshow("cameraFrame", cameraFrame);
     if(waitKey(30) >= 0) break;
   }
   return 0;
+}
+
+double measureFPS(VideoCapture& vid_stream) {
+  cout << "Measuring FPS (this may take up to 10 seconds)" << endl;
+  // Number of frames to capture
+  int num_frames = 120;
+
+  // Start and end times
+  time_t start, end;
+
+  // Variable for storing video frames
+  Mat frame;
+
+  // Start time
+  time(&start);
+  // Grab a few frames
+  for(int i = 0; i < num_frames; i++) {
+      vid_stream >> frame;
+  }
+  // End Time
+  time(&end);
+
+  // Time elapsed
+  double seconds = difftime(end, start);
+  cout << "Time taken : " << seconds << " seconds" << endl;
+
+  // Calculate frames per second
+  double fps = num_frames/seconds;
+  return fps;
 }

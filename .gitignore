@@ -1,2 +1,6 @@
 webcam_test
 volleyball.dSYM
+opencv
+*.o
+volleyball
+.DS_Store

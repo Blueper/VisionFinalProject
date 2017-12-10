@@ -27,7 +27,7 @@ LIBS_ALL =  -L/usr/lib -L/usr/local/lib $(MATH_LIBS)
 
 
 #Circle param calculation program
-ALL_OBJ=webcam_test.cpp
+ALL_OBJ=webcam_test.o ball.o
 PROGRAM=volleyball
 $(PROGRAM): $(ALL_OBJ)
 	g++ `$(CV_LIBS) --cflags` $(C++FLAG) -o $(EXEC_DIR)/$@ $(ALL_OBJ) `$(CV_LIBS) --libs` $(INCLUDES) $(LIBS_ALL)
