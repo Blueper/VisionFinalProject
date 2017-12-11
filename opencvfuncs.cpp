@@ -79,3 +79,17 @@ std::pair<Point,Point> calculate_centers(Mat ball_mask, Mat frame_mask) {
   return std::make_pair(Point(x_center/area, y_center/area),
                         Point(x_center_int/int_area, y_center_int/int_area));
 }
+
+int ballInGoal(const Ball& ball, int cam_width){
+  Point curr_position = ball.GetPosition();
+  int radius = ball.GetRadius();
+  if(curr_position.x - radius <= 0){
+    return 1;
+  }
+  else if(curr_position.x + radius >= cam_width){
+    return -1;
+  }
+  else{
+    return 0;
+  }
+}

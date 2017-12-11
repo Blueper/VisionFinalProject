@@ -44,6 +44,9 @@ int main(int argc, char** argv) {
   Scalar color{255,255,255};  // white ball color
   Ball ball{width, height, radius, 100, 100, velocity, color};
 
+  int left_score = 0; //int to keep track of left score
+  int right_score = 0; //int to keep track of right score
+
   Mat mirrorFrame;
   Mat cameraFrame;
   while (true) {
@@ -98,7 +101,23 @@ int main(int argc, char** argv) {
     }    
  
     ball.Update();
+    int goal_status = ballInGoal(ball, width);
+    if(goal_status!=0){
+
+      if(goal_status==-1){
+        left_score++;
+        ball.Reset(2);
+      }
+      else if(goal_status==1){
+        right_score++;
+        ball.Reset(0);
+      }
+    }
+    
     ball.Draw(&cameraFrame);
+
+    drawText(cameraFrame, 0, 50, appendNumToText("SCORE: ", left_score));
+    drawText(cameraFrame, width-300, 50, appendNumToText("SCORE: ", right_score));
 
 //    difference.copyTo(cameraFrame);
    
