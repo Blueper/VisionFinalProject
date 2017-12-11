@@ -104,7 +104,10 @@ int main(int argc, char** argv) {
 
     ball.Draw(&frame);
     drawText(frame, 0, 50, appendNumToText("SCORE: ", left_score));
-    drawText(frame, width-300, 50, appendNumToText("SCORE: ", right_score));
+    string right_text = appendNumToText("SCORE: ", right_score);
+    int baseline = 0;
+    Size text_size = getTextSize(right_text, FONT_HERSHEY_DUPLEX, 2, 1, &baseline);
+    drawText(frame, width-(text_size.width+1), 50, appendNumToText("SCORE: ", right_score));
 
     // difference.copyTo(cameraFrame);
 
