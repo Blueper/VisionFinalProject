@@ -28,15 +28,15 @@ int main(int argc, char** argv) {
     cout << measureFPS(cam_stream) << endl;
 
   // warm camera up and cache background
-  int warmup_frames = 5;
-  for (int initial_frames = 0; initial_frames < warmup_frames; initial_frames++) {
-    cam_stream.read(frame);
-    flip(frame, frame, 1);
-    if (initial_frames == warmup_frames-1) {
-      GaussianBlur(frame, blurred_frame, Size(21,21), 0);  // remove noise
-      blurred_frame.copyTo(background);
-    }
-  }
+  //int warmup_frames = 5;
+  //for (int initial_frames = 0; initial_frames < warmup_frames; initial_frames++) {
+  //  cam_stream.read(frame);
+  //  flip(frame, frame, 1);
+  //  if (initial_frames == warmup_frames-1) {
+  //    GaussianBlur(frame, blurred_frame, Size(21,21), 0);  // remove noise
+  //    blurred_frame.copyTo(background);
+  //  }  
+  //}
 
   // Create ball at the center of image
   int radius = 25;
@@ -51,13 +51,13 @@ int main(int argc, char** argv) {
   while (true) {
     cam_stream.read(frame);  // read webcam frame
     flip(frame, frame, 1);
-    Mat fgmask = getForegroundMask(background, frame);
+    //Mat fgmask = getForegroundMask(background, frame);
 
-    // cvtColor(frame, grey_frame, CV_BGR2GRAY); // convert to grayscale
-    // GaussianBlur(grey_frame, grey_frame, Size(21,21), 0); // remove noise
-    // if(previous.empty()) grey_frame.copyTo(previous);
-    // absdiff(previous, grey_frame, difference);
-    // threshold(difference, difference, threshold_value, 255, THRESH_BINARY);
+    cvtColor(frame, grey_frame, CV_BGR2GRAY); // convert to grayscale
+    GaussianBlur(grey_frame, grey_frame, Size(21,21), 0); // remove noise
+    if(previous.empty()) grey_frame.copyTo(previous);
+    absdiff(previous, grey_frame, difference);
+    threshold(difference, difference, threshold_value, 255, THRESH_BINARY);
 
     //hitBuffer logic
     if(hitBuffer >= 10) hitBuffer = 0;
@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
       //	cout << "HIT CENTER" << endl;
   	  for(int i = -1*radius; i < radius; ++i){
   	    for(int j = -1*radius; j < radius; ++j){
-  		    if(fgmask.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) > threshold_value){
+  		    if(difference.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) > threshold_value){
   		      if(i < 0 && j > 0){ //q3++;
         			down--;
         			right++;

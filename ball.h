@@ -44,12 +44,13 @@ class Ball {
     }
     
     // Get Radius
-    int GetRadius() const{
+    int GetRadius() const {
       return radius;
     }
 
-    bool GetOutOfBounds(){
-        return out_of_bounds;
+    // Get if out of bounds
+    bool GetOutOfBounds() {
+      return out_of_bounds;
     }
 
   private:

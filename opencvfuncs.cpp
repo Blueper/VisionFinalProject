@@ -81,15 +81,15 @@ std::pair<Point,Point> calculate_centers(Mat ball_mask, Mat frame_mask) {
 }
 
 int ballInGoal(const Ball& ball, int cam_width){
-  Point curr_position = ball.GetPosition();
+  Point curr_position = ball.GetPosition(); //storing the current position of the ball
   int radius = ball.GetRadius();
   if(curr_position.x - radius <= 0){
-    return 1;
+    return 1; //right goal
   }
   else if(curr_position.x + radius >= cam_width){
-    return -1;
+    return -1; //left goal
   }
   else{
-    return 0;
+    return 0; //not in goal
   }
 }

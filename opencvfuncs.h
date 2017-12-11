@@ -26,6 +26,7 @@ Mat getForegroundMask(const Mat& background, const Mat& frame);
 // Return center of intersection and ball_mask - intersection
 std::pair<Point,Point> calculate_centers(Mat ball_mask, Mat frame_mask);
 
+// Function that returns -1 if ball is in left goal, 1 if ball is in right goal, and 0 if ball is not in any
 int ballInGoal(const Ball& ball, int cam_width);
 
 #endif
