@@ -34,6 +34,10 @@ class Ball {
 	return velocity;
     }
 
+    bool GetOutOfBounds(){
+        return out_of_bounds;
+    }
+
   private:
     int cam_width, cam_height;
     Point position;
