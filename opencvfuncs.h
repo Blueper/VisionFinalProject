@@ -22,10 +22,6 @@ double measureFPS(VideoCapture& vid_stream);
 // Given Background mask and a current frame, outputs foreground mask
 Mat getForegroundMask(const Mat& background, const Mat& frame);
 
-// Calculate centers of interrsection of ball and fg mask
-// Return center of intersection and ball_mask - intersection
-std::pair<Point,Point> calculate_centers(Mat ball_mask, Mat frame_mask);
-
 // Function that returns -1 if ball is in left goal, 1 if ball is in right goal, and 0 if ball is not in any
 int ballInGoal(const Ball& ball, int cam_width);
 

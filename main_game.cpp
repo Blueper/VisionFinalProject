@@ -27,17 +27,6 @@ int main(int argc, char** argv) {
   if (argc > 1 && !strcmp(argv[1], "fps"))
     cout << measureFPS(cam_stream) << endl;
 
-  // warm camera up and cache background
-  //int warmup_frames = 5;
-  //for (int initial_frames = 0; initial_frames < warmup_frames; initial_frames++) {
-  //  cam_stream.read(frame);
-  //  flip(frame, frame, 1);
-  //  if (initial_frames == warmup_frames-1) {
-  //    GaussianBlur(frame, blurred_frame, Size(21,21), 0);  // remove noise
-  //    blurred_frame.copyTo(background);
-  //  }  
-  //}
-
   // Create ball at the center of image
   int radius = 25;
   Vec2f velocity{0,0};  // initial ball velocity
