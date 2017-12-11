@@ -58,10 +58,10 @@ cv::Mat getForegroundMask(const Mat& background, const Mat& frame) {
 std::pair<Point,Point> calculate_centers(Mat ball_mask, Mat frame_mask) {
   int x_center = 0, y_center = 0, x_center_int = 0, y_center_int = 0,
       area = 0, int_area = 0;
-  for(int row = 0; row < frame_mask.rows; ++row) {
+  for(int row = 0; row < frame_mask.rows-1; ++row) {
     uchar* frame_p = frame_mask.ptr(row);
     uchar* ball_p = ball_mask.ptr(row);
-    for(int col = 0; col < frame_mask.cols; ++col) {
+    for(int col = 0; col < frame_mask.cols-1; ++col) {
       if (frame_p[col] == ball_p[col]) {
         x_center_int += col;
         y_center_int += row;

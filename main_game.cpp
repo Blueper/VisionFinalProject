@@ -21,6 +21,7 @@ int main(int argc, char** argv) {
   Mat background;  // first frame (only background)
   Mat frame, blurred_frame;  // current frame, grayscale current frame
   Mat difference, ball_mask(height, width, CV_8UC3, (0,0,0)); // "motion detection" frame and ball mask
+  Mat grey_ball, grey_binary;
   Mat previous;
   Mat grey_frame;
 
@@ -45,6 +46,8 @@ int main(int argc, char** argv) {
   Ball ball{width, height, radius, 100, 100, velocity, color};
 
   Mat cameraFrame;
+  bool done = false;
+  pair<Point, Point> twoCenters;
   while (true) {
     cam_stream.read(cameraFrame);  // read webcam frame
     Mat fgmask = getForegroundMask(background, frame);
@@ -61,30 +64,43 @@ int main(int argc, char** argv) {
 
     for(int i = -1*radius; i < radius; ++i){
         for(int j = -1*radius; j < radius; ++j){
-            ball_mask.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) = 255;
+            ball_mask.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[0] = 255;
+            ball_mask.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[1] = 255;
+            ball_mask.at<Vec3b>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j))[2] = 255;
         }
     }
 
     //detect ball hit
     if(difference.at<uchar>(ball.GetPosition()) > threshold_value && hitBuffer == 0){
-	cout << "HIT CENTER" << endl;
-	for(int i = -1*radius; i < radius; ++i){
-	    for(int j = -1*radius; j < radius; ++j){
-		if(difference.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) > threshold_value){
-		    power++;
-		}
+	    cout << "HIT CENTER" << endl;
+	    for(int i = -1*radius; i < radius; ++i){
+	      for(int j = -1*radius; j < radius; ++j){
+		      if(difference.at<uchar>(Point(ball.GetPosition().x+i,ball.GetPosition().y+j)) > threshold_value){
+		        power++;
+		      }
+	      }
 	    }
-	}
-	pair<Point,Point> twoCenters = calculate_centers(ball_mask, difference);
-	cout << twoCenters.first.x << " " << twoCenters.first.y << endl;
-	cout << twoCenters.second.x << " " << twoCenters.second.y << endl;
-	line(cameraFrame, twoCenters.first, twoCenters.second, (255,0,0));
-//	cout << power << endl;
-//	ball.SetVelocity(power/100, 0);
-	power = 0;
-	hitBuffer++;
+      
+      cvtColor(ball_mask, grey_ball, CV_BGR2GRAY); // convert to grayscale
+      threshold(grey_ball, grey_binary, threshold_value, 255, THRESH_BINARY);
+	    twoCenters = calculate_centers(grey_binary, difference);
+      done = true;
+	    //cout << twoCenters.first.x << " " << twoCenters.first.y << endl;
+	    //cout << twoCenters.second.x << " " << twoCenters.second.y << endl;
+	    //line(cameraFrame, twoCenters.first, twoCenters.second, (255,0,0));
+//	  cout << power << endl;
+//	  ball.SetVelocity(power/100, 0);
+	    power = 0;
+	    hitBuffer++;
     }    
- 
+
+    if(done){
+      cout << "twoCenters: " << twoCenters.second.x << " " << twoCenters.second.y << endl;
+      ball_mask.at<Vec3b>(twoCenters.second)[0] = 255;
+      ball_mask.at<Vec3b>(twoCenters.second)[1] = 255;
+      ball_mask.at<Vec3b>(twoCenters.second)[2] = 255;
+    }
+
     ball.Update();
     ball.Draw(&cameraFrame);
 
